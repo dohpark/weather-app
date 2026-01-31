@@ -1,0 +1,1 @@
+// weather entity exports
