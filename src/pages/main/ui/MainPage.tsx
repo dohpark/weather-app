@@ -12,9 +12,11 @@ import { useWeatherQuery } from '@/entities/weather'
  */
 export function MainPage() {
   const { coordinates, isLoading: isLocationLoading } = useCurrentLocation()
-  const { data: weather, isLoading: isWeatherLoading } = useWeatherQuery(
-    coordinates
-  )
+  const {
+    data: weather,
+    isLoading: isWeatherLoading,
+    error,
+  } = useWeatherQuery(coordinates)
 
   const isLoading = isLocationLoading || isWeatherLoading
 
@@ -41,7 +43,10 @@ export function MainPage() {
           temperature={weather?.current.main.temp}
           minTemp={weather?.current.main.temp_min}
           maxTemp={weather?.current.main.temp_max}
+          weather={weather?.current.weather[0]}
+          hourlyItems={weather?.forecast.list}
           isLoading={isLoading}
+          error={error}
         />
 
         <FavoriteList />
