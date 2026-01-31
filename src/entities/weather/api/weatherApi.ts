@@ -1,4 +1,4 @@
-import { apiClient } from '@/shared/api'
+import { openWeatherClient } from '@/shared/api'
 import type { OneCallResponse, WeatherQueryParams } from '../model/types'
 
 /**
@@ -12,22 +12,27 @@ import type { OneCallResponse, WeatherQueryParams } from '../model/types'
 export async function getWeather(
   params: WeatherQueryParams
 ): Promise<OneCallResponse> {
-  const { data } = await apiClient.get<OneCallResponse>('/onecall', {
-    params: {
-      lat: params.lat,
-      lon: params.lon,
-      /**
-       * 응답에서 제외할 데이터
-       * - minutely: 1분 단위 강수량 예보 (사용 안 함)
-       * - alerts: 기상 경보 (사용 안 함)
-       *
-       * 포함되는 데이터:
-       * - current: 현재 날씨
-       * - hourly: 시간별 예보 (48시간)
-       * - daily: 일별 예보 (8일)
-       */
-      exclude: 'minutely,alerts',
-    },
-  })
+  const { data } = await openWeatherClient.get<OneCallResponse>(
+    '/data/3.0/onecall',
+    {
+      params: {
+        lat: params.lat,
+        lon: params.lon,
+        units: 'metric',
+        lang: 'kr',
+        /**
+         * 응답에서 제외할 데이터
+         * - minutely: 1분 단위 강수량 예보 (사용 안 함)
+         * - alerts: 기상 경보 (사용 안 함)
+         *
+         * 포함되는 데이터:
+         * - current: 현재 날씨
+         * - hourly: 시간별 예보 (48시간)
+         * - daily: 일별 예보 (8일)
+         */
+        exclude: 'minutely,alerts',
+      },
+    }
+  )
   return data
 }

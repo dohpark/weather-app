@@ -1,1 +1,1 @@
-export { apiClient } from './baseApi'
+export { openWeatherClient } from './baseApi'

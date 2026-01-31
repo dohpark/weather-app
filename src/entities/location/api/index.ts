@@ -1,0 +1,1 @@
+export { getCoordinates } from './geocodingApi'
