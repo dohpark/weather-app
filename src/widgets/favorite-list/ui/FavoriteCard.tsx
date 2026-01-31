@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { useWeatherQuery, getWeatherIconUrl } from '@/entities/weather'
+import { parseLocation, formatDisplayAddress } from '@/entities/location'
 import type { Favorite } from '@/features/favorites'
 
 interface FavoriteCardProps {
@@ -11,6 +12,11 @@ interface FavoriteCardProps {
 export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
   const navigate = useNavigate()
   const { data, isLoading } = useWeatherQuery({ lat: favorite.lat, lon: favorite.lon })
+
+  // 이름에 '-'가 있으면 포맷팅, 없으면 그대로 사용
+  const displayName = favorite.name.includes('-')
+    ? formatDisplayAddress(parseLocation(favorite.name))
+    : favorite.name
 
   const handleClick = () => {
     const locationId = encodeURIComponent(favorite.name)
@@ -35,7 +41,7 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="relative w-full p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl text-left hover:from-blue-100 hover:to-blue-200 transition-colors cursor-pointer"
+      className="relative min-w-[200px] p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl text-left hover:from-blue-100 hover:to-blue-200 transition-colors cursor-pointer"
     >
       {/* 삭제 버튼 */}
       <button
@@ -49,7 +55,7 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
 
       {/* 장소명 */}
       <p className="text-sm font-medium text-gray-800 mb-2 pr-6 truncate">
-        {favorite.name}
+        {displayName}
       </p>
 
       {/* 날씨 정보 */}
@@ -78,7 +84,7 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
 
 function FavoriteCardSkeleton() {
   return (
-    <div className="w-full p-4 bg-gray-100 rounded-xl animate-pulse">
+    <div className="min-w-[200px] p-4 bg-gray-100 rounded-xl animate-pulse">
       <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

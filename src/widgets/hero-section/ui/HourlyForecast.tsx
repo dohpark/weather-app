@@ -9,6 +9,7 @@ interface HourlyForecastProps {
  * 시간대별 기온 가로 스크롤
  * - 3시간 간격 예보 표시
  * - 최대 8개 (24시간)
+ * - 컨테이너보다 콘텐츠가 작으면 자동 중앙 정렬
  */
 export function HourlyForecast({ items }: HourlyForecastProps) {
   // 24시간분만 표시 (8개)
@@ -16,7 +17,7 @@ export function HourlyForecast({ items }: HourlyForecastProps) {
 
   return (
     <div className="w-full overflow-x-auto scrollbar-hide">
-      <div className="flex gap-4 px-4 min-w-max">
+      <div className="flex gap-4 px-4 w-fit min-w-max mx-auto">
         {hourlyItems.map((item) => (
           <HourlyItem key={item.dt} item={item} />
         ))}

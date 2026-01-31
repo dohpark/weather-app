@@ -1,2 +1,2 @@
-export { fetchGeocode, geocodeKeys } from './geocodeApi'
-export type { GeocodeResult } from './geocodeApi'
+export { fetchGeocode, fetchReverseGeocode, geocodeKeys } from './geocodeApi'
+export type { GeocodeResult, ReverseGeocodeResult } from './geocodeApi'

@@ -59,24 +59,27 @@ export function HeroSection({
 
   return (
     <section className="flex flex-col items-center min-h-[350px] bg-gradient-to-b from-blue-400 to-blue-600 text-white rounded-2xl mx-4 py-8">
-      {/* 현재 날씨 */}
-      <h2 className="text-xl font-medium mb-1">{locationName}</h2>
+      {/* 장소명 */}
+      <h2 className="text-xl font-medium mb-4">{locationName}</h2>
 
-      {weather && (
-        <div className="flex items-center gap-2 mb-2">
-          <img
-            src={getWeatherIconUrl(weather.icon, '2x')}
-            alt={weather.description}
-            className="w-10 h-10"
-          />
-          <span className="text-sm opacity-80">{weather.description}</span>
-        </div>
-      )}
-
-      <p className="text-7xl font-light mb-2">
+      {/* 현재 기온 */}
+      <p className="text-7xl font-light mb-1">
         {temperature !== undefined ? `${Math.round(temperature)}°` : '--°'}
       </p>
 
+      {/* 날씨 상태 */}
+      {weather && (
+        <div className="flex items-center gap-1 mb-1">
+          <img
+            src={getWeatherIconUrl(weather.icon)}
+            alt={weather.description}
+            className="w-6 h-6"
+          />
+          <span className="text-sm">{weather.description}</span>
+        </div>
+      )}
+
+      {/* 최저/최고 기온 */}
       <p className="text-sm opacity-80 mb-6">
         {minTemp !== undefined && maxTemp !== undefined
           ? `최저 ${Math.round(minTemp)}° / 최고 ${Math.round(maxTemp)}°`

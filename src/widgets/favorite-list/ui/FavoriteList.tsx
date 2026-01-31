@@ -14,7 +14,7 @@ export function FavoriteList() {
       <h2 className="text-lg font-semibold text-gray-800 mb-4">즐겨찾기</h2>
 
       {favorites.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="flex flex-wrap gap-3">
           {favorites.map((favorite) => (
             <FavoriteCard
               key={favorite.id}

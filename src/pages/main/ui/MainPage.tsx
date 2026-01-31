@@ -6,6 +6,7 @@ import { FavoriteList } from '@/widgets/favorite-list'
 import { SearchModal } from '@/features/search'
 import { useCurrentLocation } from '@/features/geolocation'
 import { useWeatherQuery } from '@/entities/weather'
+import { useReverseGeocode } from '@/entities/location'
 import type { Location } from '@/entities/location'
 
 /**
@@ -24,8 +25,14 @@ export function MainPage() {
     isLoading: isWeatherLoading,
     error,
   } = useWeatherQuery(coordinates)
+  const { data: locationData, isLoading: isLocationNameLoading } = useReverseGeocode(coordinates)
 
-  const isLoading = isLocationLoading || isWeatherLoading
+  // 한국어 주소
+  const locationName = locationData
+    ? `${locationData.sigungu} ${locationData.dong}`.trim() || locationData.addressName
+    : undefined
+
+  const isLoading = isLocationLoading || isWeatherLoading || isLocationNameLoading
 
   const handleSearchClick = () => {
     setIsSearchOpen(true)
@@ -57,7 +64,7 @@ export function MainPage() {
 
       <main className="pb-8">
         <HeroSection
-          locationName={weather?.current.name}
+          locationName={locationName}
           temperature={weather?.current.main.temp}
           minTemp={weather?.current.main.temp_min}
           maxTemp={weather?.current.main.temp_max}
