@@ -1,1 +1,2 @@
-// geolocation feature exports
+export * from './model'
+export { getCurrentPosition } from './lib'
