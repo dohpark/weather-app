@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CloudRain, Thermometer, Wind, Cloud } from 'lucide-react'
+import { WeatherRadarMap, type WeatherLayerType } from '@/shared/ui'
 
 type LayerType = 'precipitation' | 'temperature' | 'wind' | 'clouds'
 
@@ -10,21 +11,44 @@ const LAYER_OPTIONS: { type: LayerType; label: string; icon: typeof CloudRain }[
   { type: 'clouds', label: '구름', icon: Cloud },
 ]
 
+// UI 레이어 타입 → OpenWeather 레이어 타입 매핑
+const LAYER_MAP: Record<LayerType, WeatherLayerType> = {
+  precipitation: 'precipitation_new',
+  temperature: 'temp_new',
+  wind: 'wind_new',
+  clouds: 'clouds_new',
+}
+
+interface RadarMapSectionProps {
+  /** 마커 표시할 좌표 */
+  coordinates?: { lat: number; lon: number } | null
+}
+
 /**
  * 레이더 맵 섹션
  * - 지도 + 날씨 레이어
- * - REAL-21에서 실제 지도 구현 예정
  */
-export function RadarMapSection() {
+export function RadarMapSection({ coordinates }: RadarMapSectionProps) {
   const [activeLayer, setActiveLayer] = useState<LayerType>('precipitation')
+
+  const markerPosition: [number, number] | undefined = coordinates
+    ? [coordinates.lat, coordinates.lon]
+    : undefined
 
   return (
     <section className="mx-4 mt-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-3">레이더 맵</h3>
 
       {/* 지도 영역 */}
-      <div className="h-64 bg-gray-100 rounded-t-xl flex items-center justify-center text-gray-400 text-sm">
-        지도 + 날씨 레이어 (REAL-21에서 구현 예정)
+      <div className="rounded-t-xl overflow-hidden">
+        <WeatherRadarMap
+          layer={LAYER_MAP[activeLayer]}
+          opacity={0.6}
+          height={256}
+          center={markerPosition}
+          zoom={coordinates ? 10 : 7}
+          markerPosition={markerPosition}
+        />
       </div>
 
       {/* 레이어 선택 버튼 */}

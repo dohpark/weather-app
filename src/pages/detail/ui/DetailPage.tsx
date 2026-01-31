@@ -63,7 +63,7 @@ export function DetailPage() {
           error={error}
         />
 
-        <RadarMapSection />
+        <RadarMapSection coordinates={coordinates} />
       </main>
     </div>
   )
