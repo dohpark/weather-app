@@ -1,1 +1,3 @@
-// weather entity exports
+export * from './model'
+export * from './lib'
+export { getWeather } from './api'
