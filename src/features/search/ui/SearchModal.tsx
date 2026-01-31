@@ -158,24 +158,28 @@ function SearchModalContent({
             </div>
           ) : results.length > 0 ? (
             <ul ref={listRef}>
-              {results.map((location, index) => (
-                <li key={location.fullAddress}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedIndex(index)
-                      selectLocation(location)
-                    }}
-                    className={`w-full px-4 py-3 text-left text-sm transition-colors ${
-                      index === selectedIndex
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'hover:bg-gray-50 text-gray-900'
-                    }`}
-                  >
-                    {formatDisplayAddress(location)}
-                  </button>
-                </li>
-              ))}
+              {results.map((location, index) => {
+                const displayName = formatDisplayAddress(location)
+
+                return (
+                  <li key={location.fullAddress}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedIndex(index)
+                        selectLocation(location)
+                      }}
+                      className={`w-full px-4 py-3 text-left text-sm transition-colors ${
+                        index === selectedIndex
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'hover:bg-gray-50 text-gray-900'
+                      }`}
+                    >
+                      {displayName}
+                    </button>
+                  </li>
+                )
+              })}
             </ul>
           ) : query ? (
             <p className="py-8 text-center text-sm text-gray-500">
@@ -191,3 +195,4 @@ function SearchModalContent({
     </div>
   )
 }
+

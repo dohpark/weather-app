@@ -1,0 +1,52 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { Favorite } from './types'
+
+const MAX_FAVORITES = 6
+
+interface FavoritesState {
+  favorites: Favorite[]
+  addFavorite: (favorite: Omit<Favorite, 'id'>) => boolean
+  removeFavorite: (id: string) => void
+  isFavorite: (lat: number, lon: number) => boolean
+}
+
+export const useFavoritesStore = create<FavoritesState>()(
+  persist(
+    (set, get) => ({
+      favorites: [],
+
+      addFavorite: (favorite) => {
+        const state = get()
+        if (state.favorites.length >= MAX_FAVORITES) return false
+        if (state.favorites.some((f) => f.lat === favorite.lat && f.lon === favorite.lon)) {
+          return false
+        }
+
+        const newFavorite: Favorite = {
+          ...favorite,
+          id: `${favorite.lat}-${favorite.lon}-${Date.now()}`,
+        }
+
+        set((state) => ({
+          favorites: [...state.favorites, newFavorite],
+        }))
+        return true
+      },
+
+      removeFavorite: (id) => {
+        set((state) => ({
+          favorites: state.favorites.filter((f) => f.id !== id),
+        }))
+      },
+
+      isFavorite: (lat, lon) => {
+        return get().favorites.some((f) => f.lat === lat && f.lon === lon)
+      },
+    }),
+    {
+      name: 'weather-favorites',
+    }
+  )
+)
+
