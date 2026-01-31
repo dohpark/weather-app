@@ -4,6 +4,7 @@ import { RadarMapSection } from './RadarMapSection'
 import { HeroSection } from '@/widgets/hero-section'
 import { useWeatherQuery } from '@/entities/weather'
 import { parseLocation, formatDisplayAddress } from '@/entities/location'
+import { useFavorites } from '@/features/favorites'
 
 /**
  * 상세 페이지
@@ -25,9 +26,30 @@ export function DetailPage() {
   const coordinates = lat && lon ? { lat: parseFloat(lat), lon: parseFloat(lon) } : null
   const { data: weather, isLoading, error } = useWeatherQuery(coordinates)
 
+  const { addFavorite, removeFavoriteByCoords, isFavorite, isFull } = useFavorites()
+  const isCurrentFavorite = coordinates ? isFavorite(coordinates.lat, coordinates.lon) : false
+
+  const handleToggleFavorite = () => {
+    if (!coordinates) return
+
+    if (isCurrentFavorite) {
+      removeFavoriteByCoords(coordinates.lat, coordinates.lon)
+    } else {
+      addFavorite({
+        name: rawLocationName || locationName,
+        lat: coordinates.lat,
+        lon: coordinates.lon,
+      })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <DetailHeader />
+      <DetailHeader
+        isFavorite={isCurrentFavorite}
+        isFull={isFull}
+        onToggleFavorite={handleToggleFavorite}
+      />
 
       <main className="pb-8">
         <HeroSection

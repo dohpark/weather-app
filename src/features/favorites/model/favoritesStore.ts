@@ -8,7 +8,10 @@ interface FavoritesState {
   favorites: Favorite[]
   addFavorite: (favorite: Omit<Favorite, 'id'>) => boolean
   removeFavorite: (id: string) => void
+  removeFavoriteByCoords: (lat: number, lon: number) => void
+  updateFavoriteName: (id: string, name: string) => void
   isFavorite: (lat: number, lon: number) => boolean
+  getFavoriteByCoords: (lat: number, lon: number) => Favorite | undefined
 }
 
 export const useFavoritesStore = create<FavoritesState>()(
@@ -40,8 +43,26 @@ export const useFavoritesStore = create<FavoritesState>()(
         }))
       },
 
+      removeFavoriteByCoords: (lat, lon) => {
+        set((state) => ({
+          favorites: state.favorites.filter((f) => f.lat !== lat || f.lon !== lon),
+        }))
+      },
+
+      updateFavoriteName: (id, name) => {
+        set((state) => ({
+          favorites: state.favorites.map((f) =>
+            f.id === id ? { ...f, name } : f
+          ),
+        }))
+      },
+
       isFavorite: (lat, lon) => {
         return get().favorites.some((f) => f.lat === lat && f.lon === lon)
+      },
+
+      getFavoriteByCoords: (lat, lon) => {
+        return get().favorites.find((f) => f.lat === lat && f.lon === lon)
       },
     }),
     {

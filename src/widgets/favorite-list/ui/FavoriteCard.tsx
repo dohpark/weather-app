@@ -1,5 +1,6 @@
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X } from 'lucide-react'
+import { X, Pencil, Check } from 'lucide-react'
 import { useWeatherQuery, getWeatherIconUrl } from '@/entities/weather'
 import { parseLocation, formatDisplayAddress } from '@/entities/location'
 import type { Favorite } from '@/features/favorites'
@@ -7,18 +8,30 @@ import type { Favorite } from '@/features/favorites'
 interface FavoriteCardProps {
   favorite: Favorite
   onRemove: (id: string) => void
+  onUpdateName: (id: string, name: string) => void
 }
 
-export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
+export function FavoriteCard({ favorite, onRemove, onUpdateName }: FavoriteCardProps) {
   const navigate = useNavigate()
   const { data, isLoading } = useWeatherQuery({ lat: favorite.lat, lon: favorite.lon })
+  const [isEditing, setIsEditing] = useState(false)
+  const [editName, setEditName] = useState(favorite.name)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // 이름에 '-'가 있으면 포맷팅, 없으면 그대로 사용
   const displayName = favorite.name.includes('-')
     ? formatDisplayAddress(parseLocation(favorite.name))
     : favorite.name
 
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditing])
+
   const handleClick = () => {
+    if (isEditing) return
     const locationId = encodeURIComponent(favorite.name)
     navigate(`/detail/${locationId}?lat=${favorite.lat}&lon=${favorite.lon}`)
   }
@@ -26,6 +39,31 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation()
     onRemove(favorite.id)
+  }
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setEditName(displayName)
+    setIsEditing(true)
+  }
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (editName.trim()) {
+      onUpdateName(favorite.id, editName.trim())
+    }
+    setIsEditing(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      if (editName.trim()) {
+        onUpdateName(favorite.id, editName.trim())
+      }
+      setIsEditing(false)
+    } else if (e.key === 'Escape') {
+      setIsEditing(false)
+    }
   }
 
   if (isLoading) {
@@ -41,7 +79,7 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
   return (
     <div
       onClick={handleClick}
-      className="relative min-w-[200px] p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl text-left hover:from-blue-100 hover:to-blue-200 transition-colors cursor-pointer"
+      className="group relative min-w-[200px] p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl text-left hover:from-blue-100 hover:to-blue-200 transition-colors cursor-pointer"
     >
       {/* 삭제 버튼 */}
       <button
@@ -54,9 +92,43 @@ export function FavoriteCard({ favorite, onRemove }: FavoriteCardProps) {
       </button>
 
       {/* 장소명 */}
-      <p className="text-sm font-medium text-gray-800 mb-2 pr-6 truncate">
-        {displayName}
-      </p>
+      <div className="flex items-center gap-1 mb-2 pr-6">
+        {isEditing ? (
+          <>
+            <input
+              ref={inputRef}
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 text-sm font-medium text-gray-800 bg-white rounded px-1 py-0.5 outline-none border border-blue-300"
+            />
+            <button
+              type="button"
+              onClick={handleSave}
+              className="p-1 rounded hover:bg-white/50"
+              aria-label="저장"
+            >
+              <Check className="w-3 h-3 text-blue-600" />
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-medium text-gray-800 truncate">
+              {displayName}
+            </p>
+            <button
+              type="button"
+              onClick={handleEditClick}
+              className="p-1 rounded hover:bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="별칭 수정"
+            >
+              <Pencil className="w-3 h-3 text-gray-500" />
+            </button>
+          </>
+        )}
+      </div>
 
       {/* 날씨 정보 */}
       <div className="flex items-center justify-between">
