@@ -1,8 +1,12 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Header } from '@/widgets/header'
 import { HeroSection } from '@/widgets/hero-section'
 import { FavoriteList } from '@/widgets/favorite-list'
+import { SearchModal } from '@/features/search'
 import { useCurrentLocation } from '@/features/geolocation'
 import { useWeatherQuery } from '@/entities/weather'
+import type { Location } from '@/entities/location'
 
 /**
  * 메인 페이지
@@ -11,7 +15,10 @@ import { useWeatherQuery } from '@/entities/weather'
  * - 즐겨찾기: 저장된 장소들
  */
 export function MainPage() {
-  const { coordinates, isLoading: isLocationLoading } = useCurrentLocation()
+  const navigate = useNavigate()
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+
+  const { coordinates, isLoading: isLocationLoading, refetch: refetchLocation } = useCurrentLocation()
   const {
     data: weather,
     isLoading: isWeatherLoading,
@@ -21,13 +28,24 @@ export function MainPage() {
   const isLoading = isLocationLoading || isWeatherLoading
 
   const handleSearchClick = () => {
-    // REAL-14에서 구현
-    console.log('검색 클릭')
+    setIsSearchOpen(true)
+  }
+
+  const handleSearchClose = () => {
+    setIsSearchOpen(false)
+  }
+
+  const handleSearchSelect = (
+    location: Location,
+    coords: { lat: number; lon: number }
+  ) => {
+    // 상세 페이지로 이동 (좌표를 URL 파라미터로 전달)
+    const locationId = encodeURIComponent(location.fullAddress)
+    navigate(`/detail/${locationId}?lat=${coords.lat}&lon=${coords.lon}`)
   }
 
   const handleLocationClick = () => {
-    // 현재 위치 새로고침
-    console.log('현재 위치 클릭')
+    refetchLocation()
   }
 
   return (
@@ -51,6 +69,12 @@ export function MainPage() {
 
         <FavoriteList />
       </main>
+
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={handleSearchClose}
+        onSelect={handleSearchSelect}
+      />
     </div>
   )
 }

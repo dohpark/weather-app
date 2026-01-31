@@ -1,1 +1,1 @@
-// search feature exports
+export { SearchModal } from './ui'

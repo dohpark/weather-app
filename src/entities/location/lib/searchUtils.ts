@@ -1,5 +1,6 @@
 import type { Location } from '../model/types'
 import koreaDistricts from '../data/korea_districts.json'
+import { splitCompoundAdmin } from './geocodeUtils'
 
 /**
  * 초성 추출용 상수
@@ -82,13 +83,15 @@ export function searchLocations(query: string, limit = 20): Location[] {
 
 /**
  * 표시용 주소 포맷
+ * 붙어있는 시/구를 분리하여 표시
  *
  * @example
- * formatDisplayAddress({ sido: '서울특별시', sigungu: '종로구', eupmyeondong: '청운동' })
- * // '서울특별시 종로구 청운동'
+ * formatDisplayAddress({ sido: '경기도', sigungu: '안양시만안구', eupmyeondong: '호계동' })
+ * // '경기도 안양시 만안구 호계동'
  */
 export function formatDisplayAddress(location: Location): string {
   return [location.sido, location.sigungu, location.eupmyeondong]
-    .filter(Boolean)
+    .filter((v): v is string => Boolean(v))
+    .flatMap(splitCompoundAdmin)
     .join(' ')
 }

@@ -1,1 +1,2 @@
-export { getCoordinates } from './geocodingApi'
+export { fetchGeocode, geocodeKeys } from './geocodeApi'
+export type { GeocodeResult } from './geocodeApi'
