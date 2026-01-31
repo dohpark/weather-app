@@ -5,88 +5,90 @@ export interface WeatherCondition {
   icon: string
 }
 
-export interface CurrentWeather {
-  dt: number
-  sunrise: number
-  sunset: number
-  temp: number
-  feels_like: number
-  pressure: number
-  humidity: number
-  dew_point: number
-  uvi: number
-  clouds: number
+/**
+ * Current Weather API 응답
+ * @see https://openweathermap.org/current
+ */
+export interface CurrentWeatherResponse {
+  coord: {
+    lon: number
+    lat: number
+  }
+  weather: WeatherCondition[]
+  main: {
+    temp: number
+    feels_like: number
+    temp_min: number
+    temp_max: number
+    pressure: number
+    humidity: number
+  }
   visibility: number
-  wind_speed: number
-  wind_deg: number
-  weather: WeatherCondition[]
+  wind: {
+    speed: number
+    deg: number
+  }
+  clouds: {
+    all: number
+  }
+  dt: number
+  sys: {
+    country: string
+    sunrise: number
+    sunset: number
+  }
+  timezone: number
+  name: string
 }
 
-export interface HourlyWeather {
+/**
+ * 5 Day / 3 Hour Forecast API 응답
+ * @see https://openweathermap.org/forecast5
+ */
+export interface ForecastResponse {
+  list: ForecastItem[]
+  city: {
+    name: string
+    coord: {
+      lat: number
+      lon: number
+    }
+    country: string
+    timezone: number
+    sunrise: number
+    sunset: number
+  }
+}
+
+export interface ForecastItem {
   dt: number
-  temp: number
-  feels_like: number
-  pressure: number
-  humidity: number
-  dew_point: number
-  uvi: number
-  clouds: number
+  main: {
+    temp: number
+    feels_like: number
+    temp_min: number
+    temp_max: number
+    pressure: number
+    humidity: number
+  }
+  weather: WeatherCondition[]
+  clouds: {
+    all: number
+  }
+  wind: {
+    speed: number
+    deg: number
+  }
   visibility: number
-  wind_speed: number
-  wind_deg: number
-  wind_gust?: number
-  weather: WeatherCondition[]
-  pop: number
+  pop: number // 강수 확률
+  dt_txt: string
 }
 
-export interface DailyTemperature {
-  day: number
-  min: number
-  max: number
-  night: number
-  eve: number
-  morn: number
-}
-
-export interface DailyFeelsLike {
-  day: number
-  night: number
-  eve: number
-  morn: number
-}
-
-export interface DailyWeather {
-  dt: number
-  sunrise: number
-  sunset: number
-  moonrise: number
-  moonset: number
-  moon_phase: number
-  summary: string
-  temp: DailyTemperature
-  feels_like: DailyFeelsLike
-  pressure: number
-  humidity: number
-  dew_point: number
-  wind_speed: number
-  wind_deg: number
-  wind_gust?: number
-  weather: WeatherCondition[]
-  clouds: number
-  pop: number
-  rain?: number
-  snow?: number
-  uvi: number
-}
-
-export interface OneCallResponse {
-  lat: number
-  lon: number
-  timezone: string
-  timezone_offset: number
-  current: CurrentWeather
-  hourly: HourlyWeather[]
-  daily: DailyWeather[]
+/**
+ * 통합 날씨 데이터 (Current + Forecast 조합)
+ */
+export interface WeatherData {
+  current: CurrentWeatherResponse
+  forecast: ForecastResponse
 }
 
 export interface WeatherQueryParams {

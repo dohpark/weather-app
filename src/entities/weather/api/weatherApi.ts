@@ -1,38 +1,65 @@
 import { openWeatherClient } from '@/shared/api'
-import type { OneCallResponse, WeatherQueryParams } from '../model/types'
+import type {
+  CurrentWeatherResponse,
+  ForecastResponse,
+  WeatherData,
+  WeatherQueryParams,
+} from '../model/types'
 
 /**
- * One Call API 3.0으로 날씨 데이터 조회
+ * Current Weather API로 현재 날씨 조회
  *
- * @param params - 위도/경도 좌표
- * @returns 현재 날씨, 시간별 예보(48시간), 일별 예보(8일)
- *
- * @see https://openweathermap.org/api/one-call-3
+ * @see https://openweathermap.org/current
  */
-export async function getWeather(
+export async function getCurrentWeather(
   params: WeatherQueryParams
-): Promise<OneCallResponse> {
-  const { data } = await openWeatherClient.get<OneCallResponse>(
-    '/data/3.0/onecall',
+): Promise<CurrentWeatherResponse> {
+  const { data } = await openWeatherClient.get<CurrentWeatherResponse>(
+    '/data/2.5/weather',
     {
       params: {
         lat: params.lat,
         lon: params.lon,
         units: 'metric',
         lang: 'kr',
-        /**
-         * 응답에서 제외할 데이터
-         * - minutely: 1분 단위 강수량 예보 (사용 안 함)
-         * - alerts: 기상 경보 (사용 안 함)
-         *
-         * 포함되는 데이터:
-         * - current: 현재 날씨
-         * - hourly: 시간별 예보 (48시간)
-         * - daily: 일별 예보 (8일)
-         */
-        exclude: 'minutely,alerts',
       },
     }
   )
   return data
+}
+
+/**
+ * 5 Day / 3 Hour Forecast API로 예보 조회
+ * - 3시간 간격, 5일치 예보 (40개 데이터)
+ *
+ * @see https://openweathermap.org/forecast5
+ */
+export async function getForecast(
+  params: WeatherQueryParams
+): Promise<ForecastResponse> {
+  const { data } = await openWeatherClient.get<ForecastResponse>(
+    '/data/2.5/forecast',
+    {
+      params: {
+        lat: params.lat,
+        lon: params.lon,
+        units: 'metric',
+        lang: 'kr',
+      },
+    }
+  )
+  return data
+}
+
+/**
+ * 현재 날씨 + 예보 통합 조회
+ */
+export async function getWeather(
+  params: WeatherQueryParams
+): Promise<WeatherData> {
+  const [current, forecast] = await Promise.all([
+    getCurrentWeather(params),
+    getForecast(params),
+  ])
+  return { current, forecast }
 }

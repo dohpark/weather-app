@@ -15,18 +15,19 @@ export const weatherKeys = {
 }
 
 /**
- * 날씨 데이터 조회 훅
+ * 날씨 데이터 조회 훅 (Current Weather + 5 Day Forecast)
  *
  * @param params - 위도/경도 좌표 (null이면 요청하지 않음)
  * @returns { data, isLoading, error, refetch }
  *
  * @example
- * // 좌표가 있을 때 - 날씨 데이터 요청
  * const { data, isLoading } = useWeatherQuery({ lat: 37.5665, lon: 126.978 })
  *
- * @example
- * // 좌표가 없을 때 - 요청하지 않음 (enabled: false)
- * const { data } = useWeatherQuery(null)
+ * // 현재 날씨
+ * console.log(data?.current.main.temp)
+ *
+ * // 예보 (3시간 간격)
+ * console.log(data?.forecast.list)
  */
 export function useWeatherQuery(params: WeatherQueryParams | null) {
   return useQuery({
