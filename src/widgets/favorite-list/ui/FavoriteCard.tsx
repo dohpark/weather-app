@@ -133,7 +133,7 @@ export function FavoriteCard({
             <button
               type="button"
               onClick={handleEditClick}
-              className="p-1 rounded hover:bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="p-1 rounded hover:bg-white/50 transition-colors"
               aria-label="별칭 수정"
             >
               <Pencil className="w-3 h-3 text-gray-500" />
