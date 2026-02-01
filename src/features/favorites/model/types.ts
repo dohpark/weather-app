@@ -1,6 +1,2 @@
-export interface Favorite {
-  id: string
-  name: string
-  lat: number
-  lon: number
-}
+// entities에서 re-export
+export type { Favorite } from '@/entities/favorite'

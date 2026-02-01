@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { X, Pencil, Check } from 'lucide-react'
 import { getWeatherIconUrl } from '@/entities/weather'
 import { parseLocation, formatDisplayAddress } from '@/entities/location'
-import type { Favorite, WeatherData } from './types'
+import type { Favorite } from '@/entities/favorite'
+import type { WeatherData } from '@/entities/weather'
 
 interface FavoriteCardProps {
   favorite: Favorite

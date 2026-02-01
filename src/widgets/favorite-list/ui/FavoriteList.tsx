@@ -1,5 +1,6 @@
 import { FavoriteCard } from './FavoriteCard'
-import type { Favorite, WeatherData } from './types'
+import type { Favorite } from '@/entities/favorite'
+import type { WeatherData } from '@/entities/weather'
 
 interface FavoriteListProps {
   favorites: Favorite[]
