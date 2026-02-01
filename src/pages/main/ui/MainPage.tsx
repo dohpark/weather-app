@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '@/widgets/header'
 import { HeroSection } from '@/widgets/hero-section'
-import { FavoriteList } from '@/widgets/favorite-list'
 import { SearchModal } from '@/features/search'
+import { FavoriteListContainer } from '@/features/favorites'
 import { useCurrentLocation } from '@/features/geolocation'
 import { useWeatherQuery } from '@/entities/weather'
 import { useReverseGeocode } from '@/entities/location'
@@ -74,7 +74,7 @@ export function MainPage() {
           error={error}
         />
 
-        <FavoriteList />
+        <FavoriteListContainer />
       </main>
 
       <SearchModal

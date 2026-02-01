@@ -1,19 +1,30 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, Pencil, Check } from 'lucide-react'
-import { useWeatherQuery, getWeatherIconUrl } from '@/entities/weather'
+import { getWeatherIconUrl } from '@/entities/weather'
 import { parseLocation, formatDisplayAddress } from '@/entities/location'
-import type { Favorite } from '@/features/favorites'
+import type { Favorite, WeatherData } from './types'
 
 interface FavoriteCardProps {
   favorite: Favorite
+  weather?: WeatherData
+  isLoading: boolean
   onRemove: (id: string) => void
   onUpdateName: (id: string, name: string) => void
 }
 
-export function FavoriteCard({ favorite, onRemove, onUpdateName }: FavoriteCardProps) {
+/**
+ * 즐겨찾기 카드 (순수 UI 컴포넌트)
+ * - 날씨 데이터는 props로 전달받음
+ */
+export function FavoriteCard({
+  favorite,
+  weather,
+  isLoading,
+  onRemove,
+  onUpdateName,
+}: FavoriteCardProps) {
   const navigate = useNavigate()
-  const { data, isLoading } = useWeatherQuery({ lat: favorite.lat, lon: favorite.lon })
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(favorite.name)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -70,11 +81,11 @@ export function FavoriteCard({ favorite, onRemove, onUpdateName }: FavoriteCardP
     return <FavoriteCardSkeleton />
   }
 
-  const weather = data?.current
-  const temp = weather?.main.temp
-  const minTemp = weather?.main.temp_min
-  const maxTemp = weather?.main.temp_max
-  const weatherInfo = weather?.weather[0]
+  const currentWeather = weather?.current
+  const temp = currentWeather?.main.temp
+  const minTemp = currentWeather?.main.temp_min
+  const maxTemp = currentWeather?.main.temp_max
+  const weatherInfo = currentWeather?.weather[0]
 
   return (
     <div

@@ -1,14 +1,24 @@
-import { useFavorites } from '@/features/favorites'
 import { FavoriteCard } from './FavoriteCard'
+import type { Favorite, WeatherData } from './types'
+
+interface FavoriteListProps {
+  favorites: Favorite[]
+  weatherMap: Record<string, { data: WeatherData | undefined; isLoading: boolean }>
+  onRemove: (id: string) => void
+  onUpdateName: (id: string, name: string) => void
+}
 
 /**
- * 즐겨찾기 카드 목록
+ * 즐겨찾기 카드 목록 (순수 UI 컴포넌트)
  * - 최대 6개 카드 그리드 레이아웃
  * - 각 카드에 장소명, 날씨, 기온 표시
  */
-export function FavoriteList() {
-  const { favorites, removeFavorite, updateFavoriteName } = useFavorites()
-
+export function FavoriteList({
+  favorites,
+  weatherMap,
+  onRemove,
+  onUpdateName,
+}: FavoriteListProps) {
   return (
     <section className="px-4 py-6">
       <h2 className="text-lg font-semibold text-gray-800 mb-4">즐겨찾기</h2>
@@ -20,8 +30,10 @@ export function FavoriteList() {
               <FavoriteCard
                 key={favorite.id}
                 favorite={favorite}
-                onRemove={removeFavorite}
-                onUpdateName={updateFavoriteName}
+                weather={weatherMap[favorite.id]?.data}
+                isLoading={weatherMap[favorite.id]?.isLoading ?? true}
+                onRemove={onRemove}
+                onUpdateName={onUpdateName}
               />
             ))}
           </div>
