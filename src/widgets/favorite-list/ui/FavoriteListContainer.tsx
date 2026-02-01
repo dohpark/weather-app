@@ -1,12 +1,12 @@
 import { useQueries } from '@tanstack/react-query'
-import { useFavorites } from '../model/useFavorites'
-import { FavoriteList } from '@/widgets/favorite-list'
+import { useFavorites } from '@/features/favorites'
+import { FavoriteList } from './FavoriteList'
 import { getWeather } from '@/entities/weather'
 
 /**
  * 즐겨찾기 목록 컨테이너
  * - 데이터 fetching 및 상태 관리 담당
- * - UI는 widget에 위임
+ * - UI는 FavoriteList에 위임
  */
 export function FavoriteListContainer() {
   const { favorites, removeFavorite, updateFavoriteName } = useFavorites()
