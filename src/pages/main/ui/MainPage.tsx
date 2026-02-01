@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Header } from '@/widgets/header'
+import { MainHeader } from './MainHeader'
 import { HeroSection } from '@/widgets/hero-section'
 import { SearchModal } from '@/features/search'
 import { FavoriteListContainer } from '@/features/favorites'
@@ -57,7 +57,7 @@ export function MainPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header
+      <MainHeader
         onSearchClick={handleSearchClick}
         onLocationClick={handleLocationClick}
       />

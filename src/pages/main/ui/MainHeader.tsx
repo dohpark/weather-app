@@ -1,16 +1,16 @@
 import { Search, MapPin } from 'lucide-react'
 
-interface HeaderProps {
+interface MainHeaderProps {
   onSearchClick?: () => void
   onLocationClick?: () => void
 }
 
 /**
  * 메인 페이지 헤더
- * - 검색 아이콘: 클릭 시 검색 모달/드롭다운 열림
+ * - 검색 아이콘: 클릭 시 검색 모달 열림
  * - 현재 위치 버튼: 클릭 시 현재 위치로 이동
  */
-export function Header({ onSearchClick, onLocationClick }: HeaderProps) {
+export function MainHeader({ onSearchClick, onLocationClick }: MainHeaderProps) {
   return (
     <header className="flex items-center justify-between px-4 py-3">
       <button
